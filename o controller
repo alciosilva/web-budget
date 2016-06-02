@@ -1,0 +1,115 @@
+package com.tec.controller.cadastros;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
+
+import com.tec.model.bean.cadastros.Paciente;
+import com.tec.model.dao.cadastros.PacienteDAO;
+import com.tec.util.FacesContextUtil;
+
+@ManagedBean
+@ViewScoped
+public class PacienteController implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private DataModel<Paciente> pacientes;
+	private Paciente pacienteSelecionado = new Paciente();
+	private String nome;
+
+	public DataModel<Paciente> getPacientes() {
+		try {
+			PacienteDAO dao = new PacienteDAO(FacesContextUtil.getManager());
+			pacientes = new ListDataModel<Paciente>(dao.porNome(nome));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pacientes;
+	}
+
+	public void incluir() {
+		pacienteSelecionado = new Paciente();
+
+	}
+
+	public void incluirProcessa() {
+		try {
+			PacienteDAO dao = new PacienteDAO(FacesContextUtil.getManager());
+			dao.salvar(pacienteSelecionado);
+			FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_INFO, "Registro incluído com sucesso!", null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_ERROR, "Ocorreu um erro ao incluir o registro!",
+					e.getMessage());
+		}
+	}
+
+	public void alterarProcessa() {
+		try {
+			PacienteDAO dao = new PacienteDAO(FacesContextUtil.getManager());
+			dao.atualizar(pacienteSelecionado);
+			FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_INFO, "Registro alterado com sucesso!", null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_ERROR, "Ocorreu um erro ao alterar o registro!",
+					e.getMessage());
+		}
+	}
+
+	public void excluirProcessa() {
+		try {
+			if (pacienteSelecionado == null || pacienteSelecionado.getId() == null) {
+				FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_INFO, "Nenhum registro selecionado!", null);
+			} else {
+				PacienteDAO dao = new PacienteDAO(FacesContextUtil.getManager());
+				dao.excluir(pacienteSelecionado);
+				FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_INFO, "Registro excluído com sucesso!", null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContextUtil.adiconaMensagem(FacesMessage.SEVERITY_ERROR, "Ocorreu um erro ao excluir o registro!",
+					e.getMessage());
+		}
+
+	}
+
+	public Paciente getPacienteSelecionado() {
+		return pacienteSelecionado;
+	}
+
+	public void setPacienteSelecionado(Paciente pacienteSelecionado) {
+		this.pacienteSelecionado = pacienteSelecionado;
+	}
+
+	public void pegarIdade() {
+		pacienteSelecionado.setIdade(pacienteSelecionado.getDataHoje().get(Calendar.YEAR)
+				- pacienteSelecionado.getDataNascimento().get(Calendar.YEAR));
+
+	}
+
+	public DataModel<Paciente> pesquisar() {
+		try {
+			PacienteDAO dao = new PacienteDAO(FacesContextUtil.getManager());
+			pacientes = new ListDataModel<Paciente>(dao.porNome(nome));
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pacientes;
+
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+}
