@@ -1,0 +1,77 @@
+<h:form id="form1">
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton title="Novo" value="NOVO" icon="ui-icon-plus"
+					update=":formPaciente:panelGridPaciente"
+					actionListener="#{pacienteController.incluir}"
+					oncomplete="PF('dialogPaciente').show()" />
+
+				<p:commandButton title="Detalhes" value="EDITAR"
+					update=":formPaciente:panelGridPaciente" icon="ui-icon-zoomin"
+					oncomplete="PF('dialogPaciente').show()">
+				</p:commandButton>
+
+				<p:commandButton title="Excluir" value="EXCLUIR"
+					icon="ui-icon-trash" update="dataTablePaciente"
+					actionListener="#{pacienteController.excluirProcessa}">
+					<p:confirm header="Confirmação" message="Confirma Exclusão?"
+						icon="ui-icon-alert" />
+				</p:commandButton>
+
+				<p:commandButton value="PESQUISAR" icon="ui-icon-search"
+					actionListener="#{pacienteController.pesquisar}"
+					update=":form1:dataTablePaciente">
+				</p:commandButton>
+
+				<p:inputText  size="40" value="#{pacienteController.nome}"
+					this.value=""
+					placeholder="Digite o nome do paciente para pesquisar">
+				</p:inputText>
+
+			</p:toolbarGroup>
+		</p:toolbar>
+
+		
+
+		<p:dataTable id="dataTablePaciente" var="b"
+			value="#{pacienteController.pacientes}" paginator="true" rows="13"
+			paginatorAlwaysVisible="false" paginatorPosition="top"
+			selection="#{pacienteController.pacienteSelecionado}"
+			emptyMessage="." selectionMode="single" rowKey="#{b.id}">
+
+			<p:column style="width: 295px">
+				<f:facet name="header">
+					<h:outputText value="NOME" styleClass="AlinhamentoTabela" />
+				</f:facet>
+				<h:outputLabel value="#{b.nome}" />
+			</p:column>
+			<p:column style="width: 120px" styleClass="AlinhamentoTabela">
+				<f:facet name="header">
+					<h:outputText value="DATA CONSULTA" />
+				</f:facet>
+				<h:outputLabel value="#{b.dataHoje}" converter="converterCalendar" />
+			</p:column>
+			<p:column style="width: 45px" styleClass="AlinhamentoTabela">
+				<f:facet name="header">
+					<h:outputText value="IDADE" />
+				</f:facet>
+				<h:outputLabel value="#{b.idade}" />
+			</p:column>
+
+			<p:column style="width: 380px">
+				<f:facet name="header">
+					<h:outputText value="ENDERECO" />
+				</f:facet>
+				<h:outputLabel value="#{b.endereco}" />
+			</p:column>
+
+			<p:column style="width: 100px" styleClass="AlinhamentoTabela">
+				<f:facet name="header">
+					<h:outputText value="TELEFONE" />
+				</f:facet>
+				<h:outputLabel value="#{b.fone}" />
+			</p:column>
+
+
+		</p:dataTable>
+	</h:form>
